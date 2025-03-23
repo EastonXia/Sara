@@ -1,4 +1,4 @@
-# Love-Elpis
+# Sara
 一个企业级应用框架，集成了企业级后台应用的前后端的基本能力，通过自定义 dsl 配置可进行快速开发，同时通过继承的思想，对配置提供了一定的应用功能扩展能力。
 
 关于该框架的部份设计思路：[请点击这里](https://juejin.cn/post/7462658386007228451)
@@ -12,7 +12,7 @@
 
 const { 
   serverStart
-} = require('@eastonshay/love-elpis')
+} = require('@eastonshay/sara')
 
 const app = serverStart({});
 ```
@@ -39,7 +39,7 @@ const app = serverStart({});
 
 const { 
   frontendBuild
-} = require('@eastonshay/love-elpis')
+} = require('@eastonshay/sara')
 
 frontendBuild(process.env._ENV); // 'local' | 'beta' | 'prod'
 ```

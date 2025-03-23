@@ -55,10 +55,10 @@
 import { ref, watch, onMounted } from 'vue'; 
 import { useRoute } from 'vue-router';
 import { ArrowDown } from '@element-plus/icons-vue';
-import HeaderContainer from '$elpisWidgets/header-container/header-container.vue';
+import HeaderContainer from '$saraWidgets/header-container/header-container.vue';
 import SubMenu from './complex-view/sub-menu/sub-menu.vue';
-import { useMenuStore } from '$elpisStore/menu';
-import { useProjectStore } from '$elpisStore/project';
+import { useMenuStore } from '$saraStore/menu';
+import { useProjectStore } from '$saraStore/project';
 
 const route = useRoute();
 const menuStore = useMenuStore();

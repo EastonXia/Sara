@@ -49,7 +49,7 @@
 
 <script setup>
 import { ref, toRefs, computed, onMounted, watch, nextTick } from 'vue';
-import $curl from '$elpisCommon/curl';
+import $curl from '$saraCommon/curl';
 
 const props = defineProps({
   /**

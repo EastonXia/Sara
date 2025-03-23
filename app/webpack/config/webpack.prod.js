@@ -37,7 +37,7 @@ const webpackConfig = merge.smart(baseConfig, {
     },{
       test: /\.js$/,
       include: [
-        // 处理 elpis 目录
+        // 处理 sara 目录
         path.resolve(__dirname, '../../pages'),
         // 处理 业务 目录
         path.resolve(process.cwd(), './app/pages')

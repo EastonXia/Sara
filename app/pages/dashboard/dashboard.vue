@@ -13,9 +13,9 @@ import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import zhCn  from 'element-plus/es/locale/lang/zh-cn';
 import HeaderView from './complex-view/header-view/header-view.vue';
-import $curl from '$elpisCommon/curl';
-import { useMenuStore } from '$elpisStore/menu';
-import { useProjectStore } from '$elpisStore/project';
+import $curl from '$saraCommon/curl';
+import { useMenuStore } from '$saraStore/menu';
+import { useProjectStore } from '$saraStore/project';
 import { RouterView } from 'vue-router';
 
 const router = useRouter();

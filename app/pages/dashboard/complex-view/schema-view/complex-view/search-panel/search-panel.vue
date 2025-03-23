@@ -11,7 +11,7 @@
 
 <script setup>
 import { inject } from 'vue';
-import SchemaSearchBar from '$elpisWidgets/schema-search-bar/schema-search-bar.vue';
+import SchemaSearchBar from '$saraWidgets/schema-search-bar/schema-search-bar.vue';
 
 const { searchSchema } = inject('schemaViewData');
 

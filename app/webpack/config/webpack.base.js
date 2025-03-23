@@ -6,14 +6,14 @@ const merge  = require('webpack-merge');
 const { VueLoaderPlugin } = require('vue-loader');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-// 动态构造 elpisPageEntries、elpisHtmlWebpackPluginList
-const elpisPageEntries = {};
-const elpisHtmlWebpackPluginList = []
+// 动态构造 saraPageEntries、saraHtmlWebpackPluginList
+const saraPageEntries = {};
+const saraHtmlWebpackPluginList = []
 
-// 获取 elpis 的 app/pages 目录下所有入口文件 （entry.xx.js）
-const elpisEntryList = path.resolve(__dirname, '../../pages/**/entry.*.js');
-glob.sync(elpisEntryList).forEach((file) => {
-  handleFile(file, elpisPageEntries, elpisHtmlWebpackPluginList)
+// 获取 sara 的 app/pages 目录下所有入口文件 （entry.xx.js）
+const saraEntryList = path.resolve(__dirname, '../../pages/**/entry.*.js');
+glob.sync(saraEntryList).forEach((file) => {
+  handleFile(file, saraPageEntries, saraHtmlWebpackPluginList)
 });
 
 // 动态构造 businessPageEntries、businessHtmlWebpackPluginList
@@ -59,7 +59,7 @@ try {
  */
 module.exports = merge.smart({
   // 入口配置
-  entry: Object.assign(elpisPageEntries, businessPageEntries),
+  entry: Object.assign(saraPageEntries, businessPageEntries),
 
   // 模块解析配置(决定了要加载解析那些模块，以及用什么方式去解释)
   module: {
@@ -71,7 +71,7 @@ module.exports = merge.smart({
         test: /\.js$/,
         include: [
           // 只对业务代码进行 babel，加快 webpack 打包速度
-          // 处理 elpis 目录
+          // 处理 sara 目录
           path.resolve(__dirname, '../../pages'),
           // 处理 业务 目录
           // path.resolve(process.cwd(), './app/pages')
@@ -130,18 +130,18 @@ module.exports = merge.smart({
         'vue': require.resolve('vue'),
         '@babel/runtime/helpers/asyncToGenerator': require.resolve('@babel/runtime/helpers/asyncToGenerator'),
         '@babel/runtime/regenerator': require.resolve('@babel/runtime/regenerator'),
-        '$elpisPages': path.resolve(__dirname, '../../pages'),
-        '$elpisCommon': path.resolve(__dirname, '../../pages/common'),
-        '$elpisCurl': path.resolve(__dirname, '../../pages/common/curl.js'),
-        '$elpisUtils': path.resolve(__dirname, '../../pages/common/utils.js'),
-        '$elpisWidgets': path.resolve(__dirname, '../../pages/widgets'),
-        '$elpisHeaderContainer': path.resolve(__dirname, '../../pages/widgets/header-container/header-container.vue'),
-        '$elpisSiderContainer': path.resolve(__dirname, '../../pages/widgets/sider-container/sider-container.vue'),
-        '$elpisSchemaTable': path.resolve(__dirname, '../../pages/widgets/schema-table/schema-table.vue'),
-        '$elpisSchemaForm': path.resolve(__dirname, '../../pages/widgets/schema-form/schema-form.vue'),
-        '$elpisSchemaSearchBar': path.resolve(__dirname, '../../pages/widgets/schema-search-bar/schema-search-bar.vue'),
-        '$elpisStore': path.resolve(__dirname, '../../pages/store'),
-        '$elpisBoot': path.resolve(__dirname, '../../pages/boot.js'),
+        '$saraPages': path.resolve(__dirname, '../../pages'),
+        '$saraCommon': path.resolve(__dirname, '../../pages/common'),
+        '$saraCurl': path.resolve(__dirname, '../../pages/common/curl.js'),
+        '$saraUtils': path.resolve(__dirname, '../../pages/common/utils.js'),
+        '$saraWidgets': path.resolve(__dirname, '../../pages/widgets'),
+        '$saraHeaderContainer': path.resolve(__dirname, '../../pages/widgets/header-container/header-container.vue'),
+        '$saraSiderContainer': path.resolve(__dirname, '../../pages/widgets/sider-container/sider-container.vue'),
+        '$saraSchemaTable': path.resolve(__dirname, '../../pages/widgets/schema-table/schema-table.vue'),
+        '$saraSchemaForm': path.resolve(__dirname, '../../pages/widgets/schema-form/schema-form.vue'),
+        '$saraSchemaSearchBar': path.resolve(__dirname, '../../pages/widgets/schema-search-bar/schema-search-bar.vue'),
+        '$saraStore': path.resolve(__dirname, '../../pages/store'),
+        '$saraBoot': path.resolve(__dirname, '../../pages/boot.js'),
         ...aliasMap
       }
     })()
@@ -185,7 +185,7 @@ module.exports = merge.smart({
 
     // 构造最终的渲染页面
     ...[
-      ...elpisHtmlWebpackPluginList,
+      ...saraHtmlWebpackPluginList,
       ...businessHtmlWebpackPluginList
     ]
     

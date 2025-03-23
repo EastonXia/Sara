@@ -15,7 +15,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import $curl from '$elpisCommon/curl';
+import $curl from '$saraCommon/curl';
 
 const { schemaKey, schema } = defineProps({
   schemaKey: String,

@@ -1,4 +1,4 @@
-import boot from '$elpisPages/boot';
+import boot from '$saraPages/boot';
 import dashboard from './dashboard.vue';
 import businessDashboardRouterConfig from '$businessDashboardRouterConfig';
 

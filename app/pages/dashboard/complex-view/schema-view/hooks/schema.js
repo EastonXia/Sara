@@ -1,6 +1,6 @@
 import { ref, watch, onMounted, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
-import { useMenuStore } from '$elpisStore/menu';
+import { useMenuStore } from '$saraStore/menu';
 
 export const useSchema = function() {
   const route = useRoute();

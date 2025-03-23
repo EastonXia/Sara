@@ -29,8 +29,8 @@
 <script setup>
 import { ref, inject } from 'vue';
 import { ElNotification } from 'element-plus';
-import $curl from '$elpisCommon/curl';
-import SchemaForm from '$elpisWidgets/schema-form/schema-form.vue';
+import $curl from '$saraCommon/curl';
+import SchemaForm from '$saraWidgets/schema-form/schema-form.vue';
 
 const {
   api,

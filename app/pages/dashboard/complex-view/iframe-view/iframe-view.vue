@@ -8,7 +8,7 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router';
-import { useMenuStore } from '$elpisStore/menu';
+import { useMenuStore } from '$saraStore/menu';
 
 const route = useRoute();
 const menuStore = useMenuStore();

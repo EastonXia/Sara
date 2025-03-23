@@ -1,5 +1,5 @@
-// 引入 elpis-core
-const ElpisCore = require('./elpis-core');
+// 引入 sara-core
+const saraCore = require('./sara-core');
 
 // 引入 前端工程化构建方法
 const FEBuildDev = require('./app/webpack/dev.js');
@@ -7,12 +7,12 @@ const FEBuildProd = require('./app/webpack/prod.js');
 
 module.exports = {
   /**
-   * 启动 elpis
-   * @param {*} options elpis 项目配置，透传到 elpis-core
+   * 启动 sara
+   * @param {*} options sara 项目配置，透传到 sara-core
    * @returns 
    */
   serverStart(options = {}) {
-    const app = ElpisCore.start(options)
+    const app = saraCore.start(options)
     return app;
   },
 
