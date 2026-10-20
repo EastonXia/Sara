@@ -14,10 +14,10 @@
 </template>
 
 <script setup>
+import Ajv from 'ajv';
 import { ref, toRefs, provide } from 'vue';
 import FormItemConfig from './form-item-config';
 
-const Ajv = require('ajv');
 const ajv = new Ajv();
 provide('ajv', ajv);
 

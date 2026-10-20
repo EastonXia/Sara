@@ -251,3 +251,72 @@ model 配置格式如下：
 
 1. 在  `app/widgets/header-container/complex-view` 下写控件；
 2. 添加控件配置文件`app/widgets/header-container/search-item-config.js。`
+## Vite 构建（Part1）
+
+前端构建器已从 webpack 切换为 Vite，入口文件仍为 `build.js` 中的 `frontendBuild(env)`，签名不变。
+
+### 双终端启动
+
+终端 1：前端开发服务（Vite，9002）
+
+```js
+// build.js
+const { frontendBuild } = require('@eastonshay/sara')
+
+frontendBuild('local'); // 启动 Vite dev server，监听 http://127.0.0.1:9002
+```
+
+终端 2：服务端（8080），读取 `.tpl` 页面
+
+```js
+// server.js
+const { serverStart } = require('@eastonshay/sara')
+
+serverStart({});
+```
+
+生产构建：`frontendBuild('prod')` 调用 `vite.build()`，产物输出到 `app/public/dist/prod/`（`js/`、`css/`），并生成带 `/dist/prod/` 路径的 `.tpl`。
+
+### npm link 流程
+
+在框架仓库（本仓库）根目录执行一次：
+
+```bash
+npm link
+```
+
+然后在使用方（demo 项目）根目录执行：
+
+```bash
+npm link @eastonshay/sara
+```
+
+Vite 的 root 是使用方的 cwd，框架目录在 root 之外，因此 dev 下框架入口通过 `/@fs/绝对路径` 访问，`server.fs.allow` 已放行框架包根与 cwd。
+
+### 与 webpack 1.0 的差异
+
+| 项目 | webpack 1.0 | Vite（Part1） |
+|------|-------------|---------------|
+| 入口 API | `frontendBuild(env)` | 签名不变，内部改为 `app/vite/dev.js` / `prod.js` |
+| 多入口扫描 | 框架 + 业务两棵树的 `entry.*.js` | 同：两棵树合并后作为 `rollupOptions.input` |
+| dev 服务 | 独立 Express，9002 | `vite.createServer`，9002，同一进程内启动 |
+| dev `.tpl` 资源 | `http://127.0.0.1:9002/...` | 同：绝对 URL（`@vite/client` 与入口模块） |
+| prod `.tpl` 资源 | `/dist/prod/js/...` | 同：`/dist/prod/css/...` 与 `/dist/prod/js/...`（`base: '/dist/prod/'`） |
+| prod 产物目录 | `js/`、`css/` | 对齐为 `js/`、`css/`；其他资源留在 `assets/` |
+| 公共代码拆分 | `splitChunks`（vendor / common / runtime） | `manualChunks`（vendor / common），未复刻 `minChunks` 与 runtime 分离 |
+| 生产压缩 | `drop_console` | `esbuild.drop: ['console', 'debugger']` |
+| 全局注入 | `ProvidePlugin`（Vue、axios、_lodash） | 无全局注入，需在使用处显式 `import` |
+| 业务扩展缺失 | 不存在的文件回退 `blank.js`（CJS） | 回退 `app/vite/libs/blank.js`（ESM，`export default {}`） |
+| 不支持的 env | `frontendBuild` 只处理 `local` / `prod` | 同：`beta` 等其他值无操作（沿用原行为） |
+
+### Part1 完成 checklist
+
+- [x] `app/webpack/` 目录已删除（可从 git 历史恢复）
+- [x] webpack 生态依赖已从 `package.json` 移除，`vite`、`@vitejs/plugin-vue`、`@babel/runtime` 保留
+- [x] `index.js` 的 `frontendBuild` 仅指向 `app/vite/dev.js` / `app/vite/prod.js`
+- [x] dev：`/@vite/client` 与 dashboard 入口在 9002 返回 200
+- [x] prod：`vite.build()` 成功，tpl 写入 `/dist/prod/` 绝对路径
+- [ ] dev HMR 日志（需修改源文件后在终端确认）
+- [ ] 8080 dashboard 全链路 CRUD（M7）
+- [ ] 登录页、dashboard 页面在浏览器中的完整验证
+- [ ] 双终端脚本名（如 `build:dev` / `dev`）与 demo 实际脚本对齐

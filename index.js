@@ -2,8 +2,8 @@
 const saraCore = require('./sara-core');
 
 // 引入 前端工程化构建方法
-const FEBuildDev = require('./app/webpack/dev.js');
-const FEBuildProd = require('./app/webpack/prod.js');
+const FEBuildDev = require('./app/vite/dev.js');
+const FEBuildProd = require('./app/vite/prod.js');
 
 module.exports = {
   /**
