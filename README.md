@@ -19,16 +19,8 @@ const app = serverStart({});
 
 ### 添加服务端能力
 
-在根目录下创建 `app` 目录，然后根据所需功能添加目录，可提供的自定义能力有：
-
-```
-- router-schema
-- router
-- controller
-- service
-- extend
-- config
-```
+业务能力以 Nest Module 的形式编写，放在使用方仓库的 `app/modules/**/*.module.ts`，编译到 `dist/modules/` 后由框架自动扫描挂载（详见下方「Part2」）。
+框架内部的 Koa 路由、controller、service 已全部移除。
 
 ### 前端构建
 
@@ -320,3 +312,44 @@ Vite 的 root 是使用方的 cwd，框架目录在 root 之外，因此 dev 下
 - [ ] 8080 dashboard 全链路 CRUD（M7）
 - [ ] 登录页、dashboard 页面在浏览器中的完整验证
 - [ ] 双终端脚本名（如 `build:dev` / `dev`）与 demo 实际脚本对齐
+
+## Nest 内核（Part2）
+
+Koa 内核已删除，框架 HTTP 层统一使用 NestJS 12。对外 API（`serverStart` / `frontendBuild`、路径、返回格式、442 / 445 / 446）与 1.0 保持一致。
+
+### 成果
+
+- `serverStart()` 通过 `NestFactory` 拉起服务，默认监听 8080；`frontendBuild()` 签名不变
+- 横切能力按 1.0 挂载：`ApiSignGuard`（验签，445）、`ProjKeyInterceptor`（proj_key，446）、`ValidationPipe`（参数校验，442）、`AllExceptionsFilter`（50000 / 302）
+- 业务模块自动扫描：`SaraModule.register()` 扫描 `process.cwd()/dist/modules/**/*.module.js`，不在框架源码里写死业务类
+- 静态资源：`NestFactory.create` 之后直接挂 `express.static`，`app/public` 框架与业务各一份
+- 删除：`sara-core/`（旧 Koa 内核）、`app/controller|router|router-schema|service|middleware|extend|middlewares`（旧 Koa 业务）、`app/webpack/`、无关遗留脚本
+
+### 顶层目录梳理
+
+| 路径 | 说明 |
+|------|------|
+| `index.js` | 对外入口：`serverStart`、`frontendBuild` |
+| `app/main.ts` | `createApp`（横切装配，不监听）与 `bootstrap`（监听） |
+| `app/app.module.ts` | 根模块：只收 `ConfigModule` + `SaraModule.register()` |
+| `app/sara.module.ts` | 框架模块：`Extend / Project / View / 扫描到的业务模块 / Fallback` |
+| `app/common/` | 横切件：guards、filters、interceptors、pipes、middleware（静态）、fallback |
+| `app/config/` | `ConfigService`、`BOOTSTRAP_OPTIONS` |
+| `app/extend/` | 数据库、日志 provider |
+| `app/modules/` | 框架自带模块：`project`、`view` |
+| `app/types/` | 类型契约，`express.d.ts` 为 `Request.projKey` 增强 |
+| `app/pages/`、`app/vite/`、`app/public/`、`app/view/` | 前端工程与 `.tpl` 模板 |
+| `config/` | 框架默认配置 |
+| `model/` | model / project 配置加载器 |
+| `test/` | `npm test` 正式回归（依赖同级 `elpis-demo`，不存在则 skip） |
+| `dist/` | 编译产物（git 忽略，由 `nest build` / `tsc` 生成） |
+| `app/ai/` | Part3 预留（Agent / LLM），本 Part 不实现 |
+
+### 双终端启动（使用方 demo）
+
+| 终端 | 命令 | 作用 |
+|------|------|------|
+| A | `npm run build:dev` | 前端 Vite dev server，9002 |
+| B | `npm run dev` | 先 `build:modules` 编译业务模块，再以 watch 启动服务端，8080 |
+
+生产：`npm run prod`（先编译业务模块，再以 `production` 启动）。

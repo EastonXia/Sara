@@ -3,9 +3,19 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "files": [
+    "dist",
+    "index.js",
+    "app",
+    "config",
+    "model"
+  ],
   "scripts": {
     "lint": "eslint --quiet --ext js,vue .",
-    "test": "_ENV=local mocha 'test/**/*.js'"
+    "test": "_ENV=local mocha 'test/**/*.js'",
+    "build": "nest build",
+    "build:watch": "nest build --watch",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -16,9 +26,14 @@
   "dependencies": {
     "@babel/runtime": "^7.29.10",
     "@element-plus/icons-vue": "^2.3.1",
+    "@nestjs/common": "^12.2.0",
+    "@nestjs/core": "^12.2.0",
+    "@nestjs/platform-express": "^12.2.0",
     "@vitejs/plugin-vue": "^5.2.4",
     "ajv": "^6.10.2",
     "axios": "^0.19.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
     "echarts": "^5.5.0",
     "element-plus": "^2.3.7",
     "express": "^4.18.2",
@@ -33,7 +48,7 @@
     "koa-static": "^5.0.0",
     "koa-useragent": "2.0.0",
     "koa2-cors": "^2.0.6",
-    "less": "^3.8.1",
+    "less": "^4.1.0",
     "lodash": "^4.17.21",
     "log4js": "^6.9.1",
     "md5": "^2.2.1",
@@ -41,9 +56,12 @@
     "mysql": "^2.18.1",
     "mysql2": "^3.24.5",
     "node-schedule": "^2.1.1",
+    "nunjucks": "^3.2.4",
     "nodemon": "^1.19.2",
     "path": "^0.12.7",
     "pinia": "^2.1.6",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
     "superagent": "^8.1.2",
     "vite": "^6.4.4",
     "vue": "^3.3.4",
@@ -52,6 +70,9 @@
     "vuex": "^4.1.0"
   },
   "devDependencies": {
+    "@nestjs/cli": "^12.0.8",
+    "@nestjs/schematics": "^12.0.7",
+    "@types/node": "^22.20.5",
     "assert": "^2.0.0",
     "babel-eslint": "^10.0.2",
     "eslint": "^7.32.0",
@@ -60,6 +81,7 @@
     "ghooks": "~1.0.3",
     "mocha": "^6.1.4",
     "supertest": "^4.0.2",
+    "typescript": "^6.0.3",
     "validate-commit-msg": "~2.14.0"
   },
   "config": {
@@ -67,5 +89,11 @@
       "commit-msg": "validate-commit-msg",
       "pre-commit": "npm run lint"
     }
+  },
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json",
+    "./dist/*": "./dist/*.js",
+    "./types/express": "./app/types/express.d.ts"
   }
 }

@@ -4,3 +4,6 @@ config/config.local.js
 /logs
 app/public/dist
 /.vscode
+/dist
+outputs/
+*.tsbuildinfo

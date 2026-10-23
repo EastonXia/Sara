@@ -1,5 +1,5 @@
-// 引入 sara-core
-const saraCore = require('./sara-core');
+// 引入 Nest 启动入口（需先 npm run build 生成 dist）
+const { bootstrap } = require('./dist/main');
 
 // 引入 前端工程化构建方法
 const FEBuildDev = require('./app/vite/dev.js');
@@ -8,12 +8,11 @@ const FEBuildProd = require('./app/vite/prod.js');
 module.exports = {
   /**
    * 启动 sara
-   * @param {*} options sara 项目配置，透传到 sara-core
-   * @returns 
+   * @param {*} options sara 项目配置，透传到 BOOTSTRAP_OPTIONS
+   * @returns
    */
   serverStart(options = {}) {
-    const app = saraCore.start(options)
-    return app;
+    return bootstrap(options);
   },
 
   /**
@@ -27,15 +26,4 @@ module.exports = {
       FEBuildProd()
     }
   },
-
-  /**
-   * 服务端基础
-   */
-  Controller: {
-    Base: require('./app/controller/base.js'),
-  },
-  Service: {
-    Base: require('./app/service/base.js'),
-  }
 }
-

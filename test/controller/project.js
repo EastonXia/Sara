@@ -1,7 +1,11 @@
 const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
 const supertest = require('supertest');
 const md5 = require('md5');
-const saraCore = require('../../sara-core');
+
+// 同级的 elpis-demo 提供 model 与业务模块；不存在则整组用例 skip
+const demoDir = path.resolve(__dirname, '../../../elpis-demo');
 
 const signKey = 'fjoq23uj90JW0J039JFWJ3J3J032JFVXER';
 const st = Date.now();
@@ -9,23 +13,51 @@ const st = Date.now();
 describe('测试 project 相关接口', function() {
   this.timeout(60000);
 
-  let modelList;
   let projectList = [];
   let request;
+  let app;
+  let prevCwd;
 
-  it('启动服务', async() => {
-    const app = await saraCore.start();
+  before(async function() {
+    if(!fs.existsSync(demoDir)) {
+      this.skip();
+    }
 
-    modelList = require('../../model/index')(app);
-    modelList.forEach((modelItem) => {
+    // 业务配置、dist/modules 扫描、model 都以 process.cwd() 为准，所以切到 demo 目录
+    prevCwd = process.cwd();
+    process.chdir(demoDir);
+
+    // createApp 只挂好横切能力、不 listen，避免占用 8080
+    const { createApp } = require('../../dist/main');
+    app = await createApp({ name: 'ElpisDemo', homePage: '/view/project-list' });
+    await app.init();
+
+    const loadModelList = require('../../model/index');
+    loadModelList({ baseDir: demoDir }).forEach((modelItem) => {
       const { project } = modelItem;
       for(const pKey in project) {
         projectList.push(project[pKey]);
       }
-    })
+    });
 
-    request = supertest(app.listen());
-  })
+    // demo 的 AuthTokenGuard 全局生效：先登录拿 token cookie，agent 会保存并在后续请求中自动带上
+    request = supertest.agent(app.getHttpServer());
+    const loginRes = await request
+      .post('/api/auth/login')
+      .set('s_t', st)
+      .set('s_sign', md5(`${signKey}_${st}`))
+      .send({ username: 'test', password: 'test' });
+    assert(loginRes.body.success === true);
+  });
+
+  after(async function() {
+    if(app) {
+      await app.close();
+    }
+    if(prevCwd) {
+      process.chdir(prevCwd);
+    }
+  });
 
   it('GET /api/project without proj_key', async () => {
     let temRequest = request.get('/api/project');
